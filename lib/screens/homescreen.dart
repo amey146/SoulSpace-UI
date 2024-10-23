@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:soul/models/user_profile.dart';
-import 'package:soul/models/chat_session.dart';
-import 'package:soul/services/hive_service.dart';
 import 'package:intl/intl.dart';
+import 'package:soul/models/chat_session.dart';
+import 'package:soul/models/user_profile.dart';
+import 'package:soul/services/hive_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -58,7 +58,7 @@ class _SoulHomeScreenState extends State<SoulHomeScreen> {
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: screenWidth * 0.05,
-                        vertical: screenHeight * 0.02),
+                        vertical: screenHeight * 0.06),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -110,50 +110,8 @@ class _SoulHomeScreenState extends State<SoulHomeScreen> {
                     ),
                   ),
                   // Action buttons (unchanged)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildActionButton(
-                            context,
-                            screenHeight * 0.31,
-                            screenWidth * 0.4,
-                            const Color(0xff7cf6ad),
-                            CupertinoIcons.mic,
-                            'Talk with SoulVoice',
-                            '/voice',
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: screenWidth * 0.01),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildActionButton(
-                            context,
-                            screenHeight * 0.15,
-                            screenWidth * 0.4,
-                            const Color(0xffbcf489),
-                            CupertinoIcons.chat_bubble_fill,
-                            'Chat',
-                            '/chat',
-                          ),
-                          SizedBox(height: screenHeight * 0.01),
-                          _buildActionButton(
-                            context,
-                            screenHeight * 0.15,
-                            screenWidth * 0.4,
-                            const Color(0xffe0e5fd),
-                            CupertinoIcons.graph_square_fill,
-                            'Stats',
-                            '/stats',
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  HomeActionButtonCards(
+                      screenHeight: screenHeight, screenWidth: screenWidth),
                   SizedBox(height: screenHeight * 0.03),
                   Text(
                     'Recent History',
@@ -209,43 +167,6 @@ class _SoulHomeScreenState extends State<SoulHomeScreen> {
   }
 
   // Helper methods (unchanged)
-  Widget _buildActionButton(BuildContext context, double height, double width,
-      Color color, IconData icon, String label, String route) {
-    return InkWell(
-      onTap: () => context.push(route),
-      child: Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color.withOpacity(0.7),
-              ),
-              padding: const EdgeInsets.all(7),
-              child: Icon(icon, size: 35, color: const Color(0xff360844)),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 20,
-                color: Color(0xff360844),
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildRecentHistoryCard(
     String label,
@@ -304,6 +225,166 @@ class _SoulHomeScreenState extends State<SoulHomeScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class HomeActionButtonCards extends StatelessWidget {
+  const HomeActionButtonCards({
+    super.key,
+    required this.screenHeight,
+    required this.screenWidth,
+  });
+
+  final double screenHeight;
+  final double screenWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              child: Container(
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(40),
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(16)),
+                    color: Color(0xff7cf6ad)),
+                height: screenHeight * 0.31,
+                width: screenWidth * 0.4,
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xff75e8a4),
+                      ),
+                      padding: const EdgeInsets.all(7),
+                      child: const Icon(
+                        CupertinoIcons.mic,
+                        size: 35,
+                        color: Color(0xff360844),
+                      ),
+                    ),
+                    const Text(
+                      'Talk with SoulVoice',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                )),
+              ),
+              onTap: () {
+                context.push('/voice');
+              },
+            ),
+          ],
+        ),
+        SizedBox(
+          width: screenWidth * 0.01,
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              child: Container(
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(16),
+                        bottomLeft: Radius.circular(16),
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(40)),
+                    color: Color(0xffbcf489)),
+                height: screenHeight * 0.15,
+                width: screenWidth * 0.4,
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0xffade07e),
+                      ),
+                      padding: const EdgeInsets.all(7),
+                      child: const Icon(
+                        CupertinoIcons.chat_bubble_fill,
+                        size: 35,
+                        color: Color(0xff512E5F),
+                      ),
+                    ),
+                    const Text(
+                      'Chat',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0xff512E5F),
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                )),
+              ),
+              onTap: () {
+                context.push('/chat');
+              },
+            ),
+            SizedBox(
+              height: screenHeight * 0.01,
+            ),
+            InkWell(
+              child: Container(
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(40),
+                        bottomLeft: Radius.circular(16),
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16)),
+                    color: Color(0xffe0e5fd)),
+                height: screenHeight * 0.15,
+                width: screenWidth * 0.4,
+                child: Center(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color.fromARGB(255, 230, 233, 251),
+                      ),
+                      padding: const EdgeInsets.all(7),
+                      child: const Icon(
+                        CupertinoIcons.graph_square_fill,
+                        size: 35,
+                        color: Color(0xff512E5F),
+                      ),
+                    ),
+                    const Text(
+                      'Stats',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Color(0xff512E5F),
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                )),
+              ),
+              onTap: () {
+                context.push('/stats');
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
