@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:soul/models/user_profile.dart';
 import 'package:soul/services/hive_service.dart';
 
@@ -89,7 +89,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple.shade700,
+        backgroundColor: const Color.fromARGB(255, 22, 22, 22),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -108,10 +108,9 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xff661080), Color(0xff2B0437)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+          image: DecorationImage(
+            image: AssetImage('assets/bgblack.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: SingleChildScrollView(

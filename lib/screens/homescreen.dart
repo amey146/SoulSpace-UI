@@ -58,7 +58,7 @@ class _SoulHomeScreenState extends State<SoulHomeScreen> {
                   Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: screenWidth * 0.05,
-                        vertical: screenHeight * 0.06),
+                        vertical: screenHeight * 0.02),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

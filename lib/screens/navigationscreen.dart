@@ -31,7 +31,7 @@ class _SoulBotHomeState extends State<SoulBotHome> {
           ),
           TabItem(
             icon: Icon(
-              CupertinoIcons.chat_bubble_fill,
+              CupertinoIcons.chat_bubble_2_fill,
               color: currentPageIndex == 1
                   ? const Color(0xff032429)
                   : Colors.white,
@@ -40,7 +40,7 @@ class _SoulBotHomeState extends State<SoulBotHome> {
           ),
           TabItem(
             icon: Icon(
-              CupertinoIcons.add,
+              CupertinoIcons.pencil_outline,
               color: currentPageIndex == 2
                   ? const Color(0xff032429)
                   : Colors.white,
@@ -49,7 +49,7 @@ class _SoulBotHomeState extends State<SoulBotHome> {
           ),
           TabItem(
             icon: Icon(
-              CupertinoIcons.mic_fill,
+              CupertinoIcons.music_mic,
               color: currentPageIndex == 3
                   ? const Color(0xff032429)
                   : Colors.white,
@@ -58,7 +58,7 @@ class _SoulBotHomeState extends State<SoulBotHome> {
           ),
           TabItem(
             icon: Icon(
-              CupertinoIcons.graph_square_fill,
+              CupertinoIcons.chart_pie_fill,
               color: currentPageIndex == 4
                   ? const Color(0xff032429)
                   : Colors.white,
@@ -89,7 +89,7 @@ class _SoulBotHomeState extends State<SoulBotHome> {
           }
         },
         shadowColor: const Color.fromARGB(255, 14, 14, 14),
-        backgroundColor: const Color(0xff032429),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       ),
     );
   }
