@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
@@ -13,12 +12,18 @@ class SoulVoiceView extends StatefulWidget {
 
 class SoulVoiceViewState extends State<SoulVoiceView>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+  late AnimationController _waveController;
+  StateMachineController? _riveController;
+  SMIInput<bool>? _noInternetInput;
+  SMIInput<bool>? _errorInput;
+
+  bool _isNoInternet = false;
+  bool _isError = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    _waveController = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
     )..repeat();
@@ -26,8 +31,43 @@ class SoulVoiceViewState extends State<SoulVoiceView>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _waveController.dispose();
     super.dispose();
+  }
+
+  // Initialize Rive Controller
+  void _onRiveInit(Artboard artboard) {
+    final controller = StateMachineController.fromArtboard(
+      artboard,
+      'State Machine',
+    );
+    if (controller != null) {
+      artboard.addController(controller);
+      _riveController = controller;
+
+      // Bind Rive inputs to Flutter controls
+      _noInternetInput = controller.findInput<bool>('No Internet');
+      _errorInput = controller.findInput<bool>('Error');
+
+      if (_noInternetInput == null || _errorInput == null) {
+        print("Error: Rive inputs not found.");
+      } else {
+        print("Rive inputs initialized successfully.");
+      }
+    } else {
+      print("Error: State Machine Controller not found.");
+    }
+  }
+
+  // Update animation based on the checkboxes
+  void _updateAnimation() {
+    if (_noInternetInput != null && _errorInput != null) {
+      _noInternetInput?.value = _isNoInternet;
+      _errorInput?.value = _isError;
+
+      print(
+          "No Internet: ${_noInternetInput?.value}, Error: ${_errorInput?.value}");
+    }
   }
 
   @override
@@ -37,7 +77,6 @@ class SoulVoiceViewState extends State<SoulVoiceView>
         children: [
           // Background Robot Image
           Container(
-            // color: Color(0xff120025),
             color: Colors.black,
           ),
           // Centering the content
@@ -65,63 +104,66 @@ class SoulVoiceViewState extends State<SoulVoiceView>
                 ),
                 const SizedBox(height: 30), // Space between robot and text
                 // Robot animation
-                const SizedBox(
+                SizedBox(
                   height: 450,
                   child: RiveAnimation.asset(
                     "assets/robocat.riv",
                     fit: BoxFit.fitHeight,
                     stateMachines: ['State Machine'],
                     artboard: 'Catbot',
+                    onInit: _onRiveInit, // Initialize the Rive animation
                   ),
                 ),
                 SizedBox(
                   height: 100,
                   width: double.infinity,
                   child: AnimatedBuilder(
-                    animation: _controller,
+                    animation: _waveController,
                     builder: (context, child) {
                       return CustomPaint(
-                        painter: WavePainter(_controller.value),
+                        painter: WavePainter(_waveController.value),
                       );
                     },
                   ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Checkbox for "No Internet"
+                    Checkbox(
+                      value: _isNoInternet,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _isNoInternet = value ?? false;
+                          _isError = !_isNoInternet && _isError;
+                          _updateAnimation();
+                        });
+                      },
+                    ),
+                    const Text("No Internet",
+                        style: TextStyle(color: Colors.white)),
+
+                    const SizedBox(width: 20),
+
+                    // Checkbox for "Error"
+                    Checkbox(
+                      value: _isError,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _isError = value ?? false;
+                          _isNoInternet = !_isError && _isNoInternet;
+                          _updateAnimation();
+                        });
+                      },
+                    ),
+                    const Text("Error", style: TextStyle(color: Colors.white)),
+                  ],
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class GlassmorphismContainer extends StatelessWidget {
-  final Widget child;
-
-  const GlassmorphismContainer({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 350,
-      height: 400,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2), // Semi-transparent background
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          width: 2,
-          color: Colors.white.withOpacity(0.2),
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Glass blur effect
-          child: Padding(
-            padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-            child: child,
-          ),
-        ),
       ),
     );
   }
